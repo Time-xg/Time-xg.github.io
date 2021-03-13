@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"time-xg.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+<meta name="description" content="前言由于AndroidQ开始，google更加重视App的隐私等内容，所以对存储进行了重新的定义。 主要分为两大部分的存储：  属于App自己包名下的私有文件 Android&#x2F;data&#x2F;package（不需要读取权限）  公有目录下的媒体文件 如music、DCIM、Download等   这种方式限制了APP随便在更目录乱建目录，同时应用在卸载时也同时删除包名下的文件，防止了App在卸载之后的残">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndroidQ的文件存储">
+<meta property="og:url" content="http://time-xg.github.io/2020/11/02/20201102AndroidQ-Meida/index.html">
+<meta property="og:site_name" content="Time Blog">
+<meta property="og:description" content="前言由于AndroidQ开始，google更加重视App的隐私等内容，所以对存储进行了重新的定义。 主要分为两大部分的存储：  属于App自己包名下的私有文件 Android&#x2F;data&#x2F;package（不需要读取权限）  公有目录下的媒体文件 如music、DCIM、Download等   这种方式限制了APP随便在更目录乱建目录，同时应用在卸载时也同时删除包名下的文件，防止了App在卸载之后的残">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s1.ax1x.com/2020/11/02/BBuBZ9.png">
+<meta property="article:published_time" content="2020-11-02T10:16:34.000Z">
+<meta property="article:modified_time" content="2020-11-03T10:21:44.759Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/11/02/BBuBZ9.png">
+
+
+<link rel="canonical" href="http://time-xg.github.io/2020/11/02/20201102AndroidQ-Meida/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>AndroidQ的文件存储 | Time Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Time Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E6%9C%89%E7%9B%AE%E5%BD%95"><span class="nav-number">2.1.</span> <span class="nav-text">私有目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E6%9C%89%E7%9B%AE%E5%BD%95"><span class="nav-number">2.2.</span> <span class="nav-text">共有目录</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Time"
+      src="/images/tx.jpg">
+  <p class="site-author-name" itemprop="name">Time</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Time-xg" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Time-xg" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://time-xg.github.io/2020/11/02/20201102AndroidQ-Meida/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/tx.jpg">
+      <meta itemprop="name" content="Time">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Time Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AndroidQ的文件存储
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-11-02 18:16:34" itemprop="dateCreated datePublished" datetime="2020-11-02T18:16:34+08:00">2020-11-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-11-03 18:21:44" itemprop="dateModified" datetime="2020-11-03T18:21:44+08:00">2020-11-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于AndroidQ开始，google更加重视App的隐私等内容，所以对存储进行了重新的定义。</p>
+<p>主要分为两大部分的存储：</p>
+<ul>
+<li><p>属于App自己包名下的私有文件 Android/data/package（不需要读取权限）</p>
+</li>
+<li><p>公有目录下的媒体文件 如music、DCIM、Download等</p>
+</li>
+</ul>
+<p>这种方式限制了APP随便在更目录乱建目录，同时应用在卸载时也同时删除包名下的文件，防止了App在卸载之后的残留。同时也极大的保证用户的隐私。</p>
+<span id="more"></span>
+
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="私有目录"><a href="#私有目录" class="headerlink" title="私有目录"></a>私有目录</h3><p>首先是读写私有目录的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 内部存储路径 data&#x2F;data&#x2F;packagename  不需要存储权限</span><br><span class="line">     String insidePath &#x3D; getFilesDir().getAbsolutePath();</span><br><span class="line">     &#x2F;&#x2F; 外部cache存储路径 Android&#x2F;data&#x2F;packagename&#x2F;cache  不需要存储权限</span><br><span class="line">     String cach_paht &#x3D; getExternalCacheDir().getAbsolutePath();</span><br><span class="line">     &#x2F;&#x2F; 在外部file文件夹中  Android&#x2F;data&#x2F;packagename&#x2F;files&#x2F;my file name  不需要存储权限</span><br><span class="line">     String test_path &#x3D; getExternalFilesDir(&quot;test&quot;).getAbsolutePath();</span><br></pre></td></tr></table></figure>
+
+<p>外面可以通过这三个方法获取到内部存储和外部存储和外部cache等路径。通过观察getExternalFilesDir(String type)的源代码，我们可以发现这个方法的参数虽然是个tpye的字符串，官方也提供了一些属性。</p>
+<p><img src="https://s1.ax1x.com/2020/11/02/BBuBZ9.png"></p>
+<p>但是这字符串并不受枚举的约束，我们可以自定义一种type，在包名下创建一个自定义文件名的文件夹。</p>
+<p>拿到文件路径后，我们可以直接通过File来创建文件，通过IO留直接进行读写操作非常的方便。</p>
+<p>写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">if (existSDCard())&#123;</span><br><span class="line">                    file &#x3D; new File(test_path,&quot;a.txt&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                else &#123;</span><br><span class="line">                    file &#x3D; new File(insidePath,&quot;a.txt&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                try &#123;</span><br><span class="line">                    fos &#x3D; new FileOutputStream(file);</span><br><span class="line">                    fos.write(&quot;test storage&quot;.getBytes());</span><br><span class="line">                    fos.flush();</span><br><span class="line"></span><br><span class="line">                &#125; catch (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                finally &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        fos.close();</span><br><span class="line">                    &#125; catch (IOException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br></pre></td></tr></table></figure>
+
+<p>读操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if (existSDCard())&#123;</span><br><span class="line">                    file &#x3D; new File(test_path,&quot;a.txt&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                else &#123;</span><br><span class="line">                    file &#x3D; new File(insidePath,&quot;a.txt&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                try &#123;</span><br><span class="line"></span><br><span class="line">                    FileInputStream fis &#x3D; new FileInputStream(file);</span><br><span class="line">                    BufferedInputStream bis&#x3D;new BufferedInputStream(fis);</span><br><span class="line">                    String content&#x3D;&quot;&quot;;</span><br><span class="line">                    &#x2F;&#x2F;自定义缓冲区</span><br><span class="line">                    byte[] buffer&#x3D;new byte[1024];</span><br><span class="line">                    int flag&#x3D;0;</span><br><span class="line">                    while((flag&#x3D;bis.read(buffer))!&#x3D;-1)&#123;</span><br><span class="line">                        content+&#x3D;new String(buffer, 0, flag);</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F;关闭的时候只需要关闭最外层的流就行了</span><br><span class="line">                    bis.close();</span><br><span class="line">                    tv_content.setText(content);</span><br><span class="line">                &#125; catch (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="共有目录"><a href="#共有目录" class="headerlink" title="共有目录"></a>共有目录</h3><p>共有目录主要是通过google的MediaStore这个api来获取公共资源目录的api来访问。</p>
+<p>例如：获取创建一张在DCIM/TEST下创建一张图片：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private void createImageFile() &#123;</span><br><span class="line">    &#x2F;&#x2F; 通过Media获取外部存储公共目录的Uri</span><br><span class="line">    Uri contentUri &#x3D; MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);</span><br><span class="line">    &#x2F;&#x2F; 创建Contentvalues 并放入文件属性</span><br><span class="line">    ContentValues contentValues &#x3D; new ContentValues();</span><br><span class="line">    long dateTaken &#x3D; System.currentTimeMillis();</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.DATE_TAKEN, dateTaken);</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.DESCRIPTION, &quot;创建的第一张图片&quot;);</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.IS_PRIVATE, 1);</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, &quot;test&quot;);</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.MIME_TYPE, &quot;image&#x2F;png&quot;);</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.TITLE, &quot;图片&quot;);</span><br><span class="line">    if (Build.VERSION.SDK_INT &gt;&#x3D; Build.VERSION_CODES.Q) &#123;</span><br><span class="line">        &#x2F;&#x2F;注意MediaStore.Downloads.RELATIVE_PATH需要targetVersion&#x3D;29,</span><br><span class="line">        &#x2F;&#x2F;故该方法只可在Android10的手机上执行</span><br><span class="line">        contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, &quot;DCIM&#x2F;test&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    long dateAdded &#x3D; System.currentTimeMillis();</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.DATE_ADDED, dateAdded);</span><br><span class="line">    long dateModified &#x3D; System.currentTimeMillis();</span><br><span class="line">    contentValues.put(MediaStore.Images.Media.DATE_MODIFIED, dateModified);</span><br><span class="line">    &#x2F;&#x2F; 向外部存储的uir插入文件信息 获取文件uri</span><br><span class="line">    Uri insert &#x3D; getContentResolver().insert(contentUri, contentValues);</span><br><span class="line">    Log.d(TAG, &quot;createFile: url : &quot; + insert);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        &#x2F;&#x2F;通过uri打开IO流  对文件进行写入操作</span><br><span class="line">        OutputStream outputStream &#x3D; getContentResolver().openOutputStream(insert);</span><br><span class="line">        Bitmap bitmap &#x3D; Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);</span><br><span class="line">        bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);</span><br><span class="line">        outputStream.write(33);</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;finally &#123;</span><br><span class="line">         &#x2F;&#x2F;showImg(insert);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/30/20201030Adapter-AndroidQ/" rel="prev" title="AndroidQ文件读取适配">
+                  <i class="fa fa-chevron-left"></i> AndroidQ文件读取适配
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/03/20201103CustonView/" rel="next" title="Android获取自定义控件对象为null的解决">
+                  Android获取自定义控件对象为null的解决 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Time</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

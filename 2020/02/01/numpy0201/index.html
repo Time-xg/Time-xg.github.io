@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"time-xg.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+<meta name="description" content="numpy介绍Numpy（Numerical Python）是一个开源的Python科学计算库，用于快速处理任意维度的数组。 Numpy支持常见的数组和矩阵操作。对于同样的数值计算任务，使用Numpy比直接使用Python要简洁的多。 Numpy使用ndarray对象来处理多维数组，该对象是一个快速而灵活的大数据容器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python之numpy">
+<meta property="og:url" content="http://time-xg.github.io/2020/02/01/numpy0201/index.html">
+<meta property="og:site_name" content="Time Blog">
+<meta property="og:description" content="numpy介绍Numpy（Numerical Python）是一个开源的Python科学计算库，用于快速处理任意维度的数组。 Numpy支持常见的数组和矩阵操作。对于同样的数值计算任务，使用Numpy比直接使用Python要简洁的多。 Numpy使用ndarray对象来处理多维数组，该对象是一个快速而灵活的大数据容器。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-01T07:56:26.000Z">
+<meta property="article:modified_time" content="2020-08-01T09:17:54.786Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://time-xg.github.io/2020/02/01/numpy0201/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>python之numpy | Time Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Time Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#numpy%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">numpy介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#numpy%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">2.</span> <span class="nav-text">numpy的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ndarray%E5%B1%9E%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">ndarray属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ndarray%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">ndarray基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%95%B0%E7%BB%84"><span class="nav-number">4.1.</span> <span class="nav-text">生成数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%BB%84"><span class="nav-number">4.2.</span> <span class="nav-text">生成随机数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%B4%A2%E5%BC%95"><span class="nav-number">4.3.</span> <span class="nav-text">数组索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%BD%A2%E7%8A%B6%E6%94%B9%E5%8F%98"><span class="nav-number">4.4.</span> <span class="nav-text">数组形状改变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D"><span class="nav-number">4.5.</span> <span class="nav-text">数组去重</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ndarray%E8%BF%90%E7%AE%97"><span class="nav-number">5.</span> <span class="nav-text">ndarray运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="nav-number">5.1.</span> <span class="nav-text">逻辑运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%88%A4%E6%96%AD%E5%87%BD%E6%95%B0"><span class="nav-number">5.2.</span> <span class="nav-text">通用判断函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%BF%90%E7%AE%97np-max"><span class="nav-number">5.3.</span> <span class="nav-text">统计运算np.max()</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Time"
+      src="/images/tx.jpg">
+  <p class="site-author-name" itemprop="name">Time</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Time-xg" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Time-xg" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://time-xg.github.io/2020/02/01/numpy0201/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/tx.jpg">
+      <meta itemprop="name" content="Time">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Time Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python之numpy
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-02-01 15:56:26" itemprop="dateCreated datePublished" datetime="2020-02-01T15:56:26+08:00">2020-02-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-08-01 17:17:54" itemprop="dateModified" datetime="2020-08-01T17:17:54+08:00">2020-08-01</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="numpy介绍"><a href="#numpy介绍" class="headerlink" title="numpy介绍"></a>numpy介绍</h1><p>Numpy（Numerical Python）是一个开源的Python科学计算库，用于快速处理任意维度的数组。</p>
+<p>Numpy支持常见的数组和矩阵操作。对于同样的数值计算任务，使用Numpy比直接使用Python要简洁的多。</p>
+<p>Numpy使用ndarray对象来处理多维数组，该对象是一个快速而灵活的大数据容器。</p>
+<span id="more"></span>
+<h1 id="numpy的优势"><a href="#numpy的优势" class="headerlink" title="numpy的优势"></a>numpy的优势</h1><ul>
+<li>内存块风格<br>numpy采用的是顺序存储，相比于python list的链式存储。在科学计算中，能减少很多遍历，加快运算速度。</li>
+<li>支持并行化运算</li>
+<li>效率远高于纯Python代码<br>numpy底层才用c语言编写，内部解除了GIL（全局解释器锁），其对数组的操作速度不受Python解释器的限制，所以，其效率远高于纯Python代码。</li>
+</ul>
+<h1 id="ndarray属性"><a href="#ndarray属性" class="headerlink" title="ndarray属性"></a>ndarray属性</h1><table>
+<thead>
+<tr>
+<th>属性名字</th>
+<th>属性解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ndarray.shape</td>
+<td>数组维度的元组</td>
+</tr>
+<tr>
+<td>ndarray.ndim</td>
+<td>数组维数</td>
+</tr>
+<tr>
+<td>ndarray.size</td>
+<td>数组中的元素数量</td>
+</tr>
+<tr>
+<td>ndarray.itemsize</td>
+<td>一个数组元素的长度（字节）</td>
+</tr>
+<tr>
+<td>ndarray.dtype</td>
+<td>数组元素的类型</td>
+</tr>
+</tbody></table>
+<h1 id="ndarray基本操作"><a href="#ndarray基本操作" class="headerlink" title="ndarray基本操作"></a>ndarray基本操作</h1><h2 id="生成数组"><a href="#生成数组" class="headerlink" title="生成数组"></a>生成数组</h2><ul>
+<li>生成0和1的数组<br>np.ones()<br>np.ones_like()</li>
+<li>从现有数组中生成<br>np.array – 深拷贝<br>np.asarray – 浅拷贝</li>
+<li>生成固定范围数组<br>np.linspace()<br>nun – 生成等间隔的多少个<br>np.arange()<br>step – 每间隔多少生成数据<br>np.logspace()<br>生成以10的N次幂的数据</li>
+</ul>
+<h2 id="生成随机数组"><a href="#生成随机数组" class="headerlink" title="生成随机数组"></a>生成随机数组</h2><ul>
+<li>正态分布<br>里面需要关注的参数:均值:u, 标准差:σ<br>u – 决定了这个图形的左右位置<br>σ – 决定了这个图形是瘦高还是矮胖<br>np.random.randn()<br>np.random.normal(0, 1, 100)</li>
+<li>均匀分布</li>
+<li>np.random.rand()<br>np.random.uniform(0, 1, 100)<br>np.random.randint(0, 10, 10)</li>
+</ul>
+<h2 id="数组索引"><a href="#数组索引" class="headerlink" title="数组索引"></a>数组索引</h2><p>直接进行索引,切片<br>对象[:, :] – 先行后列</p>
+<h2 id="数组形状改变"><a href="#数组形状改变" class="headerlink" title="数组形状改变"></a>数组形状改变</h2><p>对象.reshape()<br>没有进行行列互换,新产生一个ndarray<br>对象.resize()<br>没有进行行列互换,修改原来的ndarray<br>对象.T<br>进行了行列互换</p>
+<h2 id="数组去重"><a href="#数组去重" class="headerlink" title="数组去重"></a>数组去重</h2><p>np.unique(对象)</p>
+<h1 id="ndarray运算"><a href="#ndarray运算" class="headerlink" title="ndarray运算"></a>ndarray运算</h1><h2 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h2><p>通过&gt; , &lt; 等符号可以直接判断ndarray并进行赋值</p>
+<h2 id="通用判断函数"><a href="#通用判断函数" class="headerlink" title="通用判断函数"></a>通用判断函数</h2><ul>
+<li>np.all()</li>
+<li>np.any()</li>
+</ul>
+<h2 id="统计运算np-max"><a href="#统计运算np-max" class="headerlink" title="统计运算np.max()"></a>统计运算np.max()</h2><ul>
+<li>np.min()</li>
+<li>np.median()</li>
+<li>np.mean()</li>
+<li>np.std()</li>
+<li>np.var()</li>
+<li>np.argmax(axis=) — 最大元素对应的下标</li>
+<li>np.argmin(axis=) — 最小元素对应的下标</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/22/matplotlib0122/" rel="prev" title="python之matplotlib">
+                  <i class="fa fa-chevron-left"></i> python之matplotlib
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/02/06/numpy-pandas0206/" rel="next" title="numpy和pandas的一些区别">
+                  numpy和pandas的一些区别 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Time</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"time-xg.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+<meta name="description" content="前言由于Android要实现读取OTG的通信数据的收发数据比较复杂，我就打算采用别人封装好的第三方库libaums来实现OTG的读写。libaums： https:&#x2F;&#x2F;github.com&#x2F;magnusja&#x2F;libaums 代码实现外置设备的插拔广播首先我们要接受外置设备插入拔出的广播来判断外置设备的插入。 我们先创建一个广播接收的类，复写其onReceive的方法。 12345678910111">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android的OTG存储">
+<meta property="og:url" content="http://time-xg.github.io/2020/11/09/20201109android-otg/index.html">
+<meta property="og:site_name" content="Time Blog">
+<meta property="og:description" content="前言由于Android要实现读取OTG的通信数据的收发数据比较复杂，我就打算采用别人封装好的第三方库libaums来实现OTG的读写。libaums： https:&#x2F;&#x2F;github.com&#x2F;magnusja&#x2F;libaums 代码实现外置设备的插拔广播首先我们要接受外置设备插入拔出的广播来判断外置设备的插入。 我们先创建一个广播接收的类，复写其onReceive的方法。 12345678910111">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-09T12:43:11.000Z">
+<meta property="article:modified_time" content="2020-11-11T12:45:12.615Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://time-xg.github.io/2020/11/09/20201109android-otg/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>Android的OTG存储 | Time Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Time Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E7%BD%AE%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%92%E6%8B%94%E5%B9%BF%E6%92%AD"><span class="nav-number">2.1.</span> <span class="nav-text">外置设备的插拔广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E8%AE%BE%E5%A4%87%EF%BC%8C%E8%AF%B7%E6%B1%82%E6%9D%83%E9%99%90"><span class="nav-number">2.2.</span> <span class="nav-text">读取设备，请求权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%AF%BB%E5%86%99%E6%9D%83%E9%99%90%EF%BC%8C%E6%B3%A8%E5%86%8C%E5%B9%BF%E6%92%AD"><span class="nav-number">2.3.</span> <span class="nav-text">获取读写权限，注册广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">读写文件</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Time"
+      src="/images/tx.jpg">
+  <p class="site-author-name" itemprop="name">Time</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Time-xg" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Time-xg" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://time-xg.github.io/2020/11/09/20201109android-otg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/tx.jpg">
+      <meta itemprop="name" content="Time">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Time Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android的OTG存储
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-11-09 20:43:11" itemprop="dateCreated datePublished" datetime="2020-11-09T20:43:11+08:00">2020-11-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-11-11 20:45:12" itemprop="dateModified" datetime="2020-11-11T20:45:12+08:00">2020-11-11</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Android要实现读取OTG的通信数据的收发数据比较复杂，我就打算采用别人封装好的第三方库libaums来实现OTG的读写。<br>libaums： <a target="_blank" rel="noopener" href="https://github.com/magnusja/libaums">https://github.com/magnusja/libaums</a></p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="外置设备的插拔广播"><a href="#外置设备的插拔广播" class="headerlink" title="外置设备的插拔广播"></a>外置设备的插拔广播</h3><p>首先我们要接受外置设备插入拔出的广播来判断外置设备的插入。</p>
+<p>我们先创建一个广播接收的类，复写其onReceive的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">    String action &#x3D; intent.getAction();</span><br><span class="line">    &#x2F;&#x2F; usb插入</span><br><span class="line">    if (action.equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) &#123;</span><br><span class="line">        isConnected &#x3D; true;</span><br><span class="line">        Toast.makeText(context, &quot;onReceive: USB设备插入&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#x2F;&#x2F; 得到 USB的设备</span><br><span class="line">        UsbDevice device_add &#x3D; intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);</span><br><span class="line">        if (device_add !&#x3D; null)&#123;</span><br><span class="line">            &#x2F;&#x2F; 如果usb设备不为空  通过EventBus 发送一个自定义的Event</span><br><span class="line">            EventBus.getDefault().post(new UsbStatusChangeEvent(isConnected));</span><br><span class="line">        &#125;</span><br><span class="line">        else &#123;</span><br><span class="line">            Toast.makeText(context, &quot;device is null&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; usb拔出</span><br><span class="line">    else if (action.equals(UsbManager.ACTION_USB_DEVICE_DETACHED))&#123;</span><br><span class="line">        isConnected &#x3D; false;</span><br><span class="line">        Toast.makeText(context, &quot;onReceive: USB设备拔出&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">        EventBus.getDefault().post(new UsbStatusChangeEvent(isConnected));</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 权限申请</span><br><span class="line">    else if (action.equals(OTGActivity.ACTION_USB_PERMISSION))&#123;</span><br><span class="line">        UsbDevice usbDevice &#x3D; intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);</span><br><span class="line">        &#x2F;&#x2F;允许权限申请</span><br><span class="line">        if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) &#123;</span><br><span class="line">            if (usbDevice !&#x3D; null) &#123;</span><br><span class="line">                Toast.makeText(context, &quot;权限已获取&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                EventBus.getDefault().post(new UsbStatusChangeEvent(true, usbDevice));</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                Toast.makeText(context, &quot;没有插入U盘&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Toast.makeText(context, &quot;未获取到U盘权限&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    else &#123;</span><br><span class="line">        Log.d(&quot;USBReceiver&quot;, &quot;action&quot; + action);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+<h3 id="读取设备，请求权限"><a href="#读取设备，请求权限" class="headerlink" title="读取设备，请求权限"></a>读取设备，请求权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 接受event</span><br><span class="line">    @Subscribe(threadMode &#x3D; ThreadMode.MAIN)</span><br><span class="line">    public void onUsbChangeEvent(UsbStatusChangeEvent event)&#123;</span><br><span class="line"></span><br><span class="line">        if (event.isConnected)&#123;</span><br><span class="line">            &#x2F;&#x2F;Toast.makeText(this, &quot;Main Usb已连接&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">            redUDiskDevsList();</span><br><span class="line">            Log.d(TAG, &quot;currentFile&quot; + cFolder.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        else if (event.isGetPermission)&#123;</span><br><span class="line">            UsbDevice usbDevice &#x3D; event.usbDevice;</span><br><span class="line">            readDevice(getUsbMass(usbDevice));</span><br><span class="line">            readFromUDisk();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 屏幕显示查看是否有设备</span><br><span class="line">    @Override</span><br><span class="line">    protected void onResume() &#123;</span><br><span class="line">        super.onResume();</span><br><span class="line">        UsbManager usbManager &#x3D; (UsbManager) getSystemService(Context.USB_SERVICE);</span><br><span class="line">        HashMap&lt;String, UsbDevice&gt; deviceList &#x3D; usbManager.getDeviceList();</span><br><span class="line">        if (deviceList.size() !&#x3D; 0)&#123;</span><br><span class="line">            redUDiskDevsList();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 读取设备列表</span><br><span class="line">    private void redUDiskDevsList() &#123;</span><br><span class="line">        &#x2F;&#x2F;设备管理器</span><br><span class="line">        UsbManager usbManager &#x3D; (UsbManager) getSystemService(Context.USB_SERVICE);</span><br><span class="line">        &#x2F;&#x2F;获取U盘存储设备</span><br><span class="line">        storageDevices &#x3D; UsbMassStorageDevice.getMassStorageDevices(this);</span><br><span class="line"></span><br><span class="line">        PendingIntent pendingIntent &#x3D; PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);</span><br><span class="line">        &#x2F;&#x2F;一般手机只有1个OTG插口</span><br><span class="line">        for (UsbMassStorageDevice device : storageDevices) &#123;</span><br><span class="line">            &#x2F;&#x2F;读取设备是否有权限</span><br><span class="line">            if (usbManager.hasPermission(device.getUsbDevice())) &#123;</span><br><span class="line">&#x2F;&#x2F;                Toast.makeText(this, &quot;有权限&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                readDevice(device);</span><br><span class="line">                readFromUDisk();</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">&#x2F;&#x2F;                Toast.makeText(this, &quot;没有权限，进行申请&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                &#x2F;&#x2F;没有权限，进行申请</span><br><span class="line">                usbManager.requestPermission(device.getUsbDevice(), pendingIntent);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (storageDevices.length &#x3D;&#x3D; 0) &#123;</span><br><span class="line">&#x2F;&#x2F;            Toast.makeText(this, &quot;请插入可用的U盘&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 读取设备</span><br><span class="line">    private void readDevice(UsbMassStorageDevice device) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            device.init();&#x2F;&#x2F;初始化</span><br><span class="line">            &#x2F;&#x2F;设备分区</span><br><span class="line">            Partition partition &#x3D; device.getPartitions().get(0);</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;文件系统</span><br><span class="line">            FileSystem currentFs &#x3D; partition.getFileSystem();</span><br><span class="line">            currentFs.getVolumeLabel();&#x2F;&#x2F;可以获取到设备的标识</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;通过FileSystem可以获取当前U盘的一些存储信息，包括剩余空间大小，容量等等</span><br><span class="line">            Log.e(&quot;Capacity: &quot;, currentFs.getCapacity() + &quot;&quot;);</span><br><span class="line">            Log.e(&quot;Occupied Space: &quot;, currentFs.getOccupiedSpace() + &quot;&quot;);</span><br><span class="line">            Log.e(&quot;Free Space: &quot;, currentFs.getFreeSpace() + &quot;&quot;);</span><br><span class="line">            Log.e(&quot;Chunk size: &quot;, currentFs.getChunkSize() + &quot;&quot;);</span><br><span class="line"></span><br><span class="line">            Log.d(TAG,&quot;可用空间：&quot; + currentFs.getFreeSpace());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            cFolder &#x3D; currentFs.getRootDirectory();&#x2F;&#x2F;设置当前文件对象为根目录</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 读取文件列表</span><br><span class="line">    private void readFromUDisk() &#123;</span><br><span class="line">        UsbFile[] usbFiles &#x3D; new UsbFile[0];</span><br><span class="line">        try &#123;</span><br><span class="line">            usbFiles &#x3D; cFolder.listFiles();</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        stringBuffer &#x3D; new StringBuffer();</span><br><span class="line">        if (null !&#x3D; usbFiles &amp;&amp; usbFiles.length &gt; 0) &#123;</span><br><span class="line">            for (UsbFile usbFile : usbFiles) &#123;</span><br><span class="line">                stringBuffer.append(&quot;, &quot; + usbFile.getName());</span><br><span class="line">&#x2F;&#x2F;                if (usbFile.getName().equals(U_DISK_FILE_NAME)) &#123;</span><br><span class="line">&#x2F;&#x2F;                    readTxtFromUDisk(usbFile);</span><br><span class="line">&#x2F;&#x2F;                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F;mUDiskShow.setText(&quot;文件名：&quot; + stringBuffer.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="获取读写权限，注册广播"><a href="#获取读写权限，注册广播" class="headerlink" title="获取读写权限，注册广播"></a>获取读写权限，注册广播</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取读写权限</span><br><span class="line">private void grantPermission() &#123;</span><br><span class="line">    &#x2F;&#x2F; 使用Environment.isExternalStorageLegacy()来检查APP的运行模式</span><br><span class="line">    if (Build.VERSION.SDK_INT &gt;&#x3D; Build.VERSION_CODES.Q &amp;&amp;</span><br><span class="line">            !Environment.isExternalStorageLegacy()) &#123;</span><br><span class="line">        Toast.makeText(this, &quot;grantPermission Error&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">    if (ActivityCompat.checkSelfPermission(OTGActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !&#x3D; PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">        ActivityCompat.requestPermissions(OTGActivity.this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;,</span><br><span class="line">                REQUEST_CODE_PERMISSION);</span><br><span class="line">        Log.d(TAG, &quot;grantPermission: 权限说明提示&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (Build.VERSION.SDK_INT &gt;&#x3D; Build.VERSION_CODES.M) &#123;</span><br><span class="line">            Log.d(TAG, &quot;grantPermission: requestPermissions&quot;);</span><br><span class="line">            requestPermissions(new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_CODE_PERMISSION);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 注册广播</span><br><span class="line">private void registerUDiskReceiver() &#123;</span><br><span class="line">    IntentFilter usbDeviceStateFilter &#x3D; new IntentFilter();</span><br><span class="line">    usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);</span><br><span class="line">    usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);</span><br><span class="line">    usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);</span><br><span class="line">    usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);</span><br><span class="line">    usbDeviceStateFilter.addAction(&quot;android.hardware.usb.action.USB_STATE&quot;);</span><br><span class="line"></span><br><span class="line">    usbDeviceStateFilter.addAction(ACTION_USB_PERMISSION); &#x2F;&#x2F;自定义广播</span><br><span class="line"></span><br><span class="line">    registerReceiver(new UsbStateChangeReceiver(), usbDeviceStateFilter);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="读写文件"><a href="#读写文件" class="headerlink" title="读写文件"></a>读写文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 写入文件</span><br><span class="line">private void writeFile() throws IOException &#123;</span><br><span class="line">    UsbFile file &#x3D; cFolder.createFile(&quot;test.txt&quot;);</span><br><span class="line">    OutputStream os &#x3D; new UsbFileOutputStream(file);</span><br><span class="line">    os.write(&quot;test write&quot;.getBytes());</span><br><span class="line">    os.close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 读文件</span><br><span class="line">private void readFile() throws IOException &#123;</span><br><span class="line">    UsbFile[] usbFiles &#x3D; cFolder.listFiles();</span><br><span class="line">    for (UsbFile usbFile : usbFiles)&#123;</span><br><span class="line">        if (usbFile.getName().equals(&quot;test.txt&quot;))&#123;</span><br><span class="line">            InputStream is &#x3D; new UsbFileInputStream(usbFile);</span><br><span class="line">            byte[] buffer &#x3D; new byte[1024];</span><br><span class="line">            String content &#x3D; &quot;&quot;;</span><br><span class="line">            while ((is.read(buffer)) !&#x3D; -1)&#123;</span><br><span class="line">                content +&#x3D; new String(buffer);</span><br><span class="line">            &#125;</span><br><span class="line">            Toast.makeText(this, content, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/09/20201109adb-connect/" rel="prev" title="Android adb connect积极拒绝">
+                  <i class="fa fa-chevron-left"></i> Android adb connect积极拒绝
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/11/20201111AnnotationProcessor/" rel="next" title="注解注解处理器">
+                  注解注解处理器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Time</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
